@@ -1,7 +1,16 @@
 \subsection{Feature Models}
+Multi-purpose tool for product lines:
+\begin{itemize}
+\item Visualization of the possible features and their hierarchy
+\item Classification of features and their dependencies (alternative/or; optional/mandatory/abstract)
+\item Formal Representation of the whole product line $\Rightarrow$ computationally processable
+\item assistance/foundation for configuration and variant validation
+\end{itemize}
 
 \subsection{Product configuration}
+Customizing a product line to specific needs, resulting in a product/variant\\
+Simplified to a list of (un-)selected features contained in the resulting product/variant\\
 
-\subsection{Contraints, contradictions, SAT-solver}
-
-\subsection{Questionnaire structures}
+\subsection{Constraints, contradictions, SAT-solver}
+Rules \& constraints specify (in-)valid configurations $\Rightarrow$ formalism of feature models allows SAT-solvers to check for validity\\
+Already possible after each step of the ongoing configuration to check partial configurations
