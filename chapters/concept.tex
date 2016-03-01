@@ -1,11 +1,44 @@
-General workflow Diagram
+[Diagram showing the general workflow]
 
-unstructured product line $\rightarrow$ generated feature model $\rightarrow$ optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert $\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire $\Rightarrow$ Product (variant)
+unstructured product line $\rightarrow$ generated feature model $\rightarrow$ optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert $\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire $\Rightarrow$ Product (variant)\\
+
+Figure~\ref{img-workflow} shows the general process aimed to archive within this work. At the beginning there is only a given product line with the modular code artifacts in their specific subdirectories of the project. These code artifacts follow certain conventions to describe their integration in the context of the whole project.
+
+Using these conventions a feature model gets extracted in which the hierarchies and dependencies of the code artifacts are included. This allows for much better overview or automated optimization, for example scanning for dead features via SAT-solver. The extracted feature model will also be used in the following step of configuration.
+
+Configuration of product lines generally requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own.
+
+To transfer the domain knowledge of experts to the product line a questionnaire is introduced. In the progress of implementing the product line experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a variant meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. The two major steps of extraction and the creation and usage of the questionnaire are described in detail on the following sections.
 
 
 \subsection{Extraction of a feature model}
-The (Naming-)conventions and rules that are applied to generate a feature model out of it.\\
-State the problems? Error-Handling on failure to comply the conventions?
+To automatically extract a feature model out of a given software project the structure of that project must be algorithmically understandable. To archive this, conventions are used for the project of which an overview follows:
+
+\begin{itemize}
+	\item All features are stored within a specified directory
+	\item Each feature is stored in a separate directory
+	\item A feature's parent features are stated in the name of the corresponding directory
+	\begin{itemize}
+		\item The complete hierarchy is displayed, except for the root feature
+		\item Individual parent features are delimited with an unique symbol
+	\end{itemize}
+	\item Each feature directory contains a configuration file with a specified name containing:
+	\begin{itemize}
+		\item A descriptive name of the feature
+		\item A description text for the feature
+		\item All dependencies including the parent features
+	\end{itemize}
+\end{itemize}
+
+All of these information are included in the resulting feature model. The most obvious correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order a parent feature will always be processed before it's child features.
+
+After placing it in the correct position within the existing partial feature model each feature's configuration file gets processed. Each feature gets enriched with it's descriptive details and it's dependencies. The list of dependencies firstly gets reduced by the parent features as the feature models hierarchy already implements this kind of dependencies. The remaining dependencies are stated as constraints. To shorten the list of constraints shared dependencies between multiple features are combined to a single constraint.\\
+
+{\color{red}TODO: State the problems:
+\begin{itemize}
+\item Error-Handling on failure to comply the conventions
+\item Missing Parent Features $\rightarrow$ Abstract features (can be configured beforehand)
+\end{itemize}}
 
 \subsection{Questionnaire Approach}
 Use questions to guide the user through a conditional configuration process. The questions, their order and the influences of the answers are pre-defined by a developer/an expert who uses his domain knowledge to design the questionnaire. Therefore, a data structure is introduced and mapped to a specific set of XML-tags.
