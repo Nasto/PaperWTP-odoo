@@ -12,7 +12,7 @@ To transfer the domain knowledge of experts to the product line a questionnaire 
 
 
 \subsection{Extraction of a feature model}
-To automatically extract a feature model out of a given software project the structure of that project must be algorithmically understandable. To archive this, conventions are used for the project of which an overview follows:
+To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. To archive this, conventions are used for the project of which an overview follows:
 
 \begin{itemize}
 	\item All features are stored within a specified directory
@@ -41,4 +41,72 @@ After placing it in the correct position within the existing partial feature mod
 \end{itemize}}
 
 \subsection{Questionnaire Approach}
-Use questions to guide the user through a conditional configuration process. The questions, their order and the influences of the answers are pre-defined by a developer/an expert who uses his domain knowledge to design the questionnaire. Therefore, a data structure is introduced and mapped to a specific set of XML-tags.
+As stated above configuration is one of the most challenging tasks within the scope of software product lines. In the previous section the automatic extraction of a feature model out of existing source code was explained. The resulting feature model yields a much better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support to simplify the process of configuration, still a lot of domain knowledge is required to be able to find the right combination of features for a given use-case.
+
+This work therefore introduces a method to allow experts to apply their knowledge and understanding to a whole product line during the development and thus enabling end users to draw on this knowledge whenever a configuration is taking place.
+
+In this work we made the decision to use a questionnaire based approach. Depending on the implementation of the questionnaire during development a partial or event complete configuration can be archived by a user through just answering the questions of the questionnaire. The concrete selection of features gets lifted to a higher level of abstraction. The user only has to decide between the possible answers presented to him in the questionnaire to best fit to his use-case. Internally the selected answers are mapped to a specified (un-)selection of features so the user avoids the hassle of considering implementation-details of each feature.
+
+This highly depends on the implementation of the questionnaire during development. Our work therefore introduces a set of tools to easily integrate such a questionnaire. The following paragraphs will give an overview over the the possible definitions of a questionnaire.
+
+Each page of the questionnaire is defined independently. It always contains at least a Question and more then one possible answer. The answers can be grouped analogous to the grouping of features in a feature model: \textit{OR} (at least one answer has to be selected), \textit{ALTERNATIVE} (exactly one answer has to be selected) and \textit{AND} (any number of answers can be selected).
+
+Each answer internally has a mapping to a set of features. This set of features defines which features are selected or specifically unselected in the case of that answer being chosen by the user.
+
+Each answer can also have an indicator to define which page of the questionnaire is to be displayed next. An answer can also indicate the end of the questionnaire. If no next page is defined the questionnaire will continue with the next page within it's definition. This allows a dynamic conditional design of the questionnaire so the user is only confronted with the exact set of questions needed to configure the variant for his specific use-case. This also allows the user to skip questions or cancel the configuration before finishing it and thus creating a partial configuration.
+
+In this work we also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in the following code snippet:
+
+\begin{lstlisting}
+<configurationSurvey>
+	<projectName>Name</projectName>
+	<section id="0">
+		<name>Section Name</name>
+		<description>Section description</description>
+	</section>
+	<page id="0" sectionId="0">
+		<question>Question for the user</question>
+		<answers type="alternative">
+			<answer nextPageId="1">
+				<label>Answer label</label>
+				<description>Answer description</description>
+				<dependencies>
+					<feature selection="false">Unselected feature</feature>
+					<feature>selected feature</feature>
+				</dependencies>
+			</answer>
+		</answers>
+	</page>
+</configurationSurvey>
+\end{lstlisting}
+
+\begin{tabular}{ l | l | l }
+\textbf{Tag} & \textbf{attributes} & \textbf{child tags}\\
+\hline
+\hline
+configurationSurvey & & projectName, section, page\\
+\hline
+section & id & name, description\\
+\hline
+page & id, sectionId & question, answers\\
+\hline
+answers & type & answer\\
+\hline
+answer & nextPageId & label, description, dependencies\\
+\hline
+dependencies & & feature\\
+\hline
+feature & selection & \\
+\end{tabular}\\
+
+
+The individual tags are explained as follows:
+
+\begin{itemize}
+\item configurationSurvey: The root tag to contain all other tags for the questionnaire.
+\item section: Enables grouping of question-pages. Also displays the name and description at the top of every page.
+\item page: Contains a question and the corresponding answers. Also has an indicator for a section
+\item answers: Contains the individual possible answers and groups them in the specified manner.
+\item answer: Defines the displayed text of an answer as well as the corresponding features. Can also have an indicator for the next page.
+\item dependencies: Defines the (un-)selection of features, if the corresponding answer gets selected.
+\end{itemize}
