@@ -1,7 +1,7 @@
 In the scope of simplifying the configuration of a given product line some specific tools and techniques were used. This section will give an overview of what was used in this work to archive the simplification.
 
 \subsection{Feature Models}
-Feature models are multi-purpose tool for product lines. Figure~\ref{img-fm} shows a simplified example of a feature model.
+Feature models are multi-purpose structure for product lines. 
 \begin{figure}
 	\includegraphics{img/img-fm.png}
 	\caption{A simple example of a feature model}
@@ -9,12 +9,14 @@ Feature models are multi-purpose tool for product lines. Figure~\ref{img-fm} sho
 \end{figure}
 Amongst their benefits are:
 \begin{itemize}
-\item Visualization of the possible features and their hierarchy
+\item Can be visualized as a feature diagram, showing the possible features and their hierarchy
 \item Classification of features and their dependencies (alternative/or; optional/mandatory/abstract)
-\item Formal Representation of the whole product line $\Rightarrow$ computationally processable
-\item Assistance/foundation for configuration and variant validation
+\item Formal Representation of the whole product line as a feature diagram $\Rightarrow$ computationally processable
+\item Enables configuration and variant validation
 \end{itemize}
-They are basically structured like trees: There is a root node, an arbitrary number of levels of nodes and finally leaf nodes without child nodes of their own. In that manner feature models map the hierarchy of features. In addition they mark each feature as either mandatory or optional as well as either abstract or concrete. The possible relationships of multiple features with a mutual parent feature are \textit{OR} (at least one feature has to be selected), \textit{ALTERNATIVE} (exactly one feature has to be selected) and \textit{AND} (any number of features can be selected). As features' relations may be of higher complexity than just parent-child relations additional constraints can be noted within a feature model. Constraints are boolean expressions, the example in figure~\ref{img-fm} shows an implication.
+Although feature models can be represented as a boolean formula in CNF or grammer (GUIDSL), it is typically represented in form of a feature diagram and constraints. The feature diagram is basically structured as a tree: There is a root node, an arbitrary number of levels of nodes and finally leaf nodes without child nodes of their own. In that manner feature models map the hierarchy of features. Non-leaf features are often marked as abstract, as they do not have to be implemented. In addition features can be marked as either mandatory or optional. The possible relationships of multiple features with a mutual parent feature are \textit{OR} (at least one feature has to be selected), \textit{ALTERNATIVE} (exactly one feature has to be selected) and \textit{AND} (any number of features can be selected). As features' relations may be of higher complexity than just parent-child relations additional constraints can be noted within a feature model. Constraints can contain any boolean expression.
+
+Figure~\ref{img-fm} shows an example of a simple feature model diagram. The node labeled "GraphLibrary" is the root feature and represents the whole Project. It contains the nodes "Edges" that has to be selected doe to the mandatory marker and "Algorithms" that is marked optional. The implemented Edge types are "Directed" and "Undirected" from which exactly one has to be chosen. From the Algorithms at least one has to be chosen. The Constraint beneath the figure~\ref{img-fm} implies that if the feature "Cycle" is selected, the Edge type is set to directed.
 
 \subsection{Product configuration}
 Through configuration a concrete product can be derived from a product line. Each valid configuration represents a specific \textit{variant} of the possible products.
