@@ -2,27 +2,39 @@
 
 unstructured product line $\rightarrow$ generated feature model $\rightarrow$ optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert $\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire $\Rightarrow$ Product (variant)\\
 
-Figure~\ref{img-workflow} shows the general process aimed to archive within this work. At the beginning there is only a given product line with the modular code artifacts in their specific subdirectories of the project. These code artifacts follow certain conventions to describe their integration in the context of the whole project.
+This work was build around the usage for Odoo\footnote{https://www.odoo.com/}, an open-source tool for enterprise-resource-planing written mainly in python\footnote{https://www.python.org/}. In this chapter, we will explain the workflow shown in figure~\ref{img-workflow} on the basis of the experiences we made with Odoo.
 
-Using these conventions a feature model gets extracted in which the hierarchies and dependencies of the code artifacts are included. This allows for much better overview or automated optimization, for example scanning for dead features via SAT-solver. The extracted feature model will also be used in the following step of configuration.
+Odoo itself is programmed as a product line. It has a lot of modular code artifacts in their specific subdirectories of the project. These code artifacts follow certain conventions to describe their integration in the context of the whole project.
 
-Configuration of product lines generally requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own.
+Using these conventions we were able to extract a feature model in which the hierarchies and dependencies of the code artifacts are included. This allows for much better overview over the product line and it's capabilities. During our efforts to implement a automated generation of a feature model we encountered some problems for which we had to find solutions/workarounds.
 
-To transfer the domain knowledge of experts to the product line a questionnaire is introduced. In the progress of implementing the product line experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a variant meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. The two major steps of extraction and the creation and usage of the questionnaire are described in detail on the following sections.
+{\color{red}TODO: State the problems:
+\begin{itemize}
+\item Error-Handling on failure to comply the conventions
+\item Missing Parent Features $\rightarrow$ Abstract features (can be configured beforehand)
+\end{itemize}}
+
+The extracted feature model will also be used in the following step of configuration.
+
+Configuration of product lines generally requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own. The same goes of course for Odoo and the various components contained in the project.
+
+To empower possible users to configure Odoo on their own, we had the idea to use a questionnaire. In the progress of implementation, experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a product meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. This effectively redesigns the process of configuration in such a way, that a user is independent of the knowledge about the details of the implementation and can focus on tailoring the product line to his specific use-case.
+
+The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail on the following sections.
 
 
 \subsection{Extraction of a feature model}
-To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. To archive this, conventions are used for the project of which an overview follows:
+To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. We had a thorough look at the source code of Odoo and found it to be structured according to the following rules:
 
 \begin{itemize}
 	\item All features are stored within a specified directory
-	\item Each feature is stored in a separate directory
+	\item Each feature is stored in a separate sub-directory
 	\item A feature's parent features are stated in the name of the corresponding directory
 	\begin{itemize}
 		\item The complete hierarchy is displayed, except for the root feature
 		\item Individual parent features are delimited with an unique symbol
 	\end{itemize}
-	\item Each feature directory contains a configuration file with a specified name containing:
+	\item Each feature directory contains a descriptive file with a specified name containing:
 	\begin{itemize}
 		\item A descriptive name of the feature
 		\item A description text for the feature
@@ -30,15 +42,11 @@ To automatically extract a feature model out of a given software project the str
 	\end{itemize}
 \end{itemize}
 
-All of these information are included in the resulting feature model. The most obvious correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order a parent feature will always be processed before it's child features.
+Following these rules we were able to automatically extract the information needed to generate a feature model. For this procedure we implemented a plugin for FeatureIDE which processes the extracted information to a feature model. The procedure to generate a feature model is stated following.
 
-After placing it in the correct position within the existing partial feature model each feature's configuration file gets processed. Each feature gets enriched with it's descriptive details and it's dependencies. The list of dependencies firstly gets reduced by the parent features as the feature models hierarchy already implements this kind of dependencies. The remaining dependencies are stated as constraints. To shorten the list of constraints shared dependencies between multiple features are combined to a single constraint.\\
+ The most obvious correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order and this way of ordering places e.g. ``Feature1'' in front of ``Feature1\_Feature'', a parent feature will always be processed before it's child features.
 
-{\color{red}TODO: State the problems:
-\begin{itemize}
-\item Error-Handling on failure to comply the conventions
-\item Missing Parent Features $\rightarrow$ Abstract features (can be configured beforehand)
-\end{itemize}}
+After placing it in the correct position within the existing partial feature model each feature's descriptive file gets processed. Each feature gets enriched with it's descriptive details and it's dependencies. The list of dependencies firstly gets reduced by the parent features as the feature models hierarchy already implements this kind of dependencies. The remaining dependencies are stated as constraints. To shorten the list of constraints shared dependencies between multiple features are combined to a single constraint.
 
 \subsection{Questionnaire Approach}
 As stated above configuration is one of the most challenging tasks within the scope of software product lines. In the previous section the automatic extraction of a feature model out of existing source code was explained. The resulting feature model yields a much better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support to simplify the process of configuration, still a lot of domain knowledge is required to be able to find the right combination of features for a given use-case.
@@ -69,9 +77,13 @@ In this work we also introduce a data structure to hold the definition of a ques
 		<answers type="alternative">
 			<answer nextPageId="1">
 				<label>Answer label</label>
-				<description>Answer description</description>
+				<description>
+					Answer description
+				</description>
 				<dependencies>
-					<feature selection="false">Unselected feature</feature>
+					<feature selection="false">
+						Unselected feature
+					</feature>
 					<feature>selected feature</feature>
 				</dependencies>
 			</answer>
@@ -80,25 +92,17 @@ In this work we also introduce a data structure to hold the definition of a ques
 </configurationSurvey>
 \end{lstlisting}
 
-\begin{tabular}{ l | l | l }
+\begin{tabulary}{\linewidth}{LLL}
 \textbf{Tag} & \textbf{attributes} & \textbf{child tags}\\
 \hline
-\hline
 configurationSurvey & & projectName, section, page\\
-\hline
 section & id & name, description\\
-\hline
 page & id, sectionId & question, answers\\
-\hline
 answers & type & answer\\
-\hline
 answer & nextPageId & label, description, dependencies\\
-\hline
 dependencies & & feature\\
-\hline
 feature & selection & \\
-\end{tabular}\\
-
+\end{tabulary}\vspace{2.5em}
 
 The individual tags are explained as follows:
 

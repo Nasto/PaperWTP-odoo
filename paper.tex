@@ -65,9 +65,16 @@
 % (uncomment the ones you want to load)
 
 \usepackage{graphicx}
+\usepackage{tabulary}
 \usepackage{amsmath}
 \usepackage{color}
 \usepackage{listings}
+\lstset{
+	basicstyle=\footnotesize\ttfamily,
+	breaklines=true,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{green}\hookrightarrow\space}},
+	tabsize=2
+}
 
 
 % *** CITATION PACKAGES ***
@@ -455,10 +462,10 @@ FeatureIDE, Feature Model, Extraction, Configuration, Questionnaire.
 % stfloats package.
 
 
-\section{Basics for simplification of variant configuration}
+\section{Basics for simplification of the configuration process}
 \input{chapters/background}
 
-\section{Workflow based on an unstructured product line}
+\section{Workflow based on an existing software product line}
 \input{chapters/concept}
 
 \section{Examplary scenarios}

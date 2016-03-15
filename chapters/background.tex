@@ -19,14 +19,32 @@ Although feature models can be represented as a boolean formula in CNF or gramme
 Figure~\ref{img-fm} shows an example of a simple feature model diagram. The node labeled "GraphLibrary" is the root feature and represents the whole Project. It contains the nodes "Edges" that has to be selected doe to the mandatory marker and "Algorithms" that is marked optional. The implemented Edge types are "Directed" and "Undirected" from which exactly one has to be chosen. From the Algorithms at least one has to be chosen. The Constraint beneath the figure~\ref{img-fm} implies that if the feature "Cycle" is selected, the Edge type is set to directed.
 
 \subsection{Product configuration}
-Through configuration a concrete product can be derived from a product line. Each valid configuration represents a specific \textit{variant} of the possible products.
+The whole product line is represented by it's feature model, which itself is a set of features with specific interrelations. The process of configuration of a product line describes the steps to derive a product from the product line. To archive this, one has to select a subset of all the possible features within the product line to meet one's requirements. But not all subsets of features result in an actual product. The interrelations of the features restrict the possible combinations of features resulting in a \textit{valid} configuration. If only one of the requirements from the interrelations between the features is not met, no product can be created and the configuration as such is considered \textit{invalid}.
 
-During configuration a user selects or unselects features to his needs. This process requires a lot of domain knowledge on the one hand and detailed information about each single feature on the other. With growing numbers of possible features (and thus growing numbers of possible variants) configuration get more and more complex and turns out to be not trivial.
+During configuration a user selects or unselects features to his needs. This process requires a lot of domain knowledge on the one hand and detailed information about each single feature on the other. With growing numbers of possible features (and thus growing numbers of possible products) configuration requires more and more effort. The sheer amount of time needed to iterate over all the features grows to be significant. But the even greater problem arises from the possible interactions and interrelations of features, which one has to keep track of during configuration. The overhead of configuration might even outright negate the benefit gained from using a product line instead of multiple stand-alone products.
 
-One of the purposes of the feature-oriented approach is saving the effort of creating a whole new product and deriving that product from a product line instead. The sheer overhead of configuration might even negate that benefit if configuration grows too complex.
+{\color{red}TODO: introduce partial configuration}
 
 \subsection{Constraints, contradictions, SAT-solver}
-As stated above a feature model may contain constraints in the form of boolean expressions. Also, the feature-tree can be expressed as a boolean statement. The model shown in figure~\ref{img-fm} can be expressed as follows:
+A feature-tree (from a feature model) can be expressed as a boolean statement. The mapping between the individual groups (sub-trees) and the corresponding boolean expression is shown in the folloing list:
+
+{\color{red}TODO: Rules for
+\begin{itemize}
+	\item Or
+	\item Alternative
+	\item And
+\end{itemize}
+}
+These particular groups are joined via a boolean \textit{AND}. For the example feature tree shown in figure~\ref{img-fm} the corresponding boolean expression is as follows:
+\begin{equation}
+\begin{split}
+	GraphLibrary\ \wedge\ Edges\\
+	\wedge\ ((Directed\ \wedge \neg Undirected)\\
+	\vee (\neg Directed\ \wedge\ Undirected))
+\end{split}
+\end{equation}\\
+
+As the feature model not only contains the feature tree, but also additional constraints, these constraints have to be considered in the boolean expression representing the complete feature model. They can be linked to one another via boolean \textit{AND}s. The connection to the previously created boolean expression of the feature tree is also made through a logical \textit{AND}. Thus, the complete resulting boolean expression for the feature model shown in figure~\ref{img-fm} is:
 \begin{equation}
 \begin{split}
 	GraphLibrary\ \wedge\ Edges\\
