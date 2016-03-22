@@ -6,7 +6,7 @@ This work was build around the usage for Odoo\footnote{https://www.odoo.com/}, a
 
 Odoo itself is programmed as a product line. It has a lot of modular code artifacts in their specific subdirectories of the project. These code artifacts follow certain conventions to describe their integration in the context of the whole project.
 
-Using these conventions we were able to extract a feature model in which the hierarchies and dependencies of the code artifacts are included. This allows for much better overview over the product line and it's capabilities. During our efforts to implement a automated generation of a feature model we encountered some problems for which we had to find solutions/workarounds.
+Using these conventions we were able to extract a feature model in which the hierarchies and dependencies of the code artifacts are included. This allows for overview over the product line and it's variability. During our efforts to implement an automated generation of a feature model we encountered some problems for which we had to find solutions/workarounds.
 
 {\color{red}TODO: State the problems:
 \begin{itemize}
@@ -14,17 +14,17 @@ Using these conventions we were able to extract a feature model in which the hie
 \item Missing Parent Features $\rightarrow$ Abstract features (can be configured beforehand)
 \end{itemize}}
 
-The extracted feature model will also be used in the following step of configuration.
+The extracted feature model is also used in the following step of configuration. There, it visualizes the interrelations of the features and supports the understanding of the configuration steps.
 
-Configuration of product lines generally requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own. The same goes of course for Odoo and the various components contained in the project.
+Configuration of product lines requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own. The same goes of course for Odoo and the various components contained in the project.
 
-To empower possible users to configure Odoo on their own, we had the idea to use a questionnaire. In the progress of implementation, experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a product meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. This effectively redesigns the process of configuration in such a way, that a user is independent of the knowledge about the details of the implementation and can focus on tailoring the product line to his specific use-case.
+To empower possible users to configure \textit{Odoo} on their own, our approach is to use a questionnaire. In the progress of implementation, experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a product meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. This effectively redesigns the process of configuration in such a way, that a user is independent of the knowledge about the details of the implementation and can focus on tailoring the product line to his specific use-case.
 
 The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail on the following sections.
 
 
 \subsection{Extraction of a feature model}
-To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. We had a thorough look at the source code of Odoo and found it to be structured according to the following rules:
+To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. We had a thorough look at the source code of \textit{Odoo} and found it to be structured according to the following rules:
 
 \begin{itemize}
 	\item All features are stored within a specified directory
@@ -42,18 +42,20 @@ To automatically extract a feature model out of a given software project the str
 	\end{itemize}
 \end{itemize}
 
-Following these rules we were able to automatically extract the information needed to generate a feature model. For this procedure we implemented a plugin for FeatureIDE which processes the extracted information to a feature model. The procedure to generate a feature model is stated following.
+Following these rules we automatically extract the information needed to generate a feature model. For this procedure we implemented a plugin for FeatureIDE which processes the extracted information to a feature model. The procedure to generate a feature model is stated following.
 
- The most obvious correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order and this way of ordering places e.g. ``Feature1'' in front of ``Feature1\_Feature'', a parent feature will always be processed before it's child features.
+The strongest correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order and this way of ordering places e.g. ``Feature1'' in front of ``Feature1\_Feature'', a parent feature will always be processed before it's child features.
 
 After placing it in the correct position within the existing partial feature model each feature's descriptive file gets processed. Each feature gets enriched with it's descriptive details and it's dependencies. The list of dependencies firstly gets reduced by the parent features as the feature models hierarchy already implements this kind of dependencies. The remaining dependencies are stated as constraints. To shorten the list of constraints shared dependencies between multiple features are combined to a single constraint.
 
+We applied these steps to a total of A files, thus extracting B features for \textit{Odoo}. These features are arranged in a total of C hierarchical levels. Additionally, D constraints limit the possible valid configurations.
+
 \subsection{Questionnaire Approach}
-As stated above configuration is one of the most challenging tasks within the scope of software product lines. In the previous section the automatic extraction of a feature model out of existing source code was explained. The resulting feature model yields a much better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support to simplify the process of configuration, still a lot of domain knowledge is required to be able to find the right combination of features for a given use-case.
+Configuration is a challenging tasks within the scope of software product lines. The resulting feature model from the automated generation yields a better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support the process of configuration, still domain knowledge is required to be able to find the right combination of features for a given use-case.
 
-This work therefore introduces a method to allow experts to apply their knowledge and understanding to a whole product line during the development and thus enabling end users to draw on this knowledge whenever a configuration is taking place.
+This work therefore introduces a method to allow experts to apply their knowledge and understanding to a whole product line during the development. Thus end users are enabled to draw on this knowledge whenever a configuration is taking place.
 
-In this work we made the decision to use a questionnaire based approach. Depending on the implementation of the questionnaire during development a partial or event complete configuration can be archived by a user through just answering the questions of the questionnaire. The concrete selection of features gets lifted to a higher level of abstraction. The user only has to decide between the possible answers presented to him in the questionnaire to best fit to his use-case. Internally the selected answers are mapped to a specified (un-)selection of features so the user avoids the hassle of considering implementation-details of each feature.
+In this work, we made the decision to use a questionnaire-based approach. Depending on the implementation of the questionnaire during development a partial or event complete configuration can be archived by a user through just answering the questions of the questionnaire. The selection of features gets lifted to a higher level of abstraction. The user only has to decide between the possible answers presented to him in the questionnaire to best fit to his use-case. Internally the selected answers are mapped to a specified (un-)selection of features so the user avoids the hassle of considering implementation-details of each feature.
 
 This highly depends on the implementation of the questionnaire during development. Our work therefore introduces a set of tools to easily integrate such a questionnaire. The following paragraphs will give an overview over the the possible definitions of a questionnaire.
 
@@ -63,7 +65,7 @@ Each answer internally has a mapping to a set of features. This set of features 
 
 Each answer can also have an indicator to define which page of the questionnaire is to be displayed next. An answer can also indicate the end of the questionnaire. If no next page is defined the questionnaire will continue with the next page within it's definition. This allows a dynamic conditional design of the questionnaire so the user is only confronted with the exact set of questions needed to configure the variant for his specific use-case. This also allows the user to skip questions or cancel the configuration before finishing it and thus creating a partial configuration.
 
-In this work we also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in the following code snippet:
+We also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in the following code snippet:
 
 \begin{lstlisting}
 <configurationSurvey>
@@ -90,6 +92,7 @@ In this work we also introduce a data structure to hold the definition of a ques
 		</answers>
 	</page>
 </configurationSurvey>
+\caption{Examplary XML file for a  questionnaire}
 \end{lstlisting}
 
 \begin{tabulary}{\linewidth}{LLL}
