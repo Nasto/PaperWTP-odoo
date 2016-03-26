@@ -5,64 +5,35 @@
 %TODO: Schaubild
 unstructured product line $\rightarrow$ generated feature model $\rightarrow$ optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert $\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire $\Rightarrow$ Product (variant)\\
 
-This work was build around the usage for Odoo\footnote{https://www.odoo.com/}, an open-source tool for enterprise-resource-planing written mainly in python\footnote{https://www.python.org/}. In this chapter, we will explain the workflow shown in figure~\ref{img-workflow} on the basis of the experiences we made with Odoo.
+This chapter describes the general workflow we aim to archive within this work. This workflow can be seen in Figure~\ref{img-workflow}. To start off, some kind of software product line is required. It's source code has to be structured in a way that allows for an algorithm to recognize the individual features as well as their interrelations, especially the hierarchical dependencies.
 
-Odoo itself is programmed as a product line. It has a lot of modular code artifacts in their specific subdirectories of the project. These code artifacts follow certain conventions to describe their integration in the context of the whole project.
 
-Using these conventions we were able to extract a feature model in which the hierarchies and dependencies of the code artifacts are included. This allows for overview over the product line and it's variability. During our efforts to implement an automated generation of a feature model we encountered some problems for which we had to find solutions/workarounds.
+The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail in the following sections.
 
-{\color{red}TODO: State the problems:
-\begin{itemize}
-\item Error-Handling on failure to comply the conventions
-\item Missing Parent Features $\rightarrow$ Abstract features (can be configured beforehand)
-\end{itemize}}
+
+\subsection{Extraction of a Feature Model}
+Out of the given structure we extract the hierarchies of the features as well as additional dependencies. These are the input for the automated generation of a feature model. This allows for overview over the product line and it's variability. During our efforts to implement an automated generation of a feature model we encounter some problems for which we have to find solutions/workarounds.
+
+The first problem consists of finding the structures of the given source code and processing them algorithmically. Most software complies to conventions regarding the naming and structuring of directories. We try to make use of these conventions. But as they are just conventions and not rules, in most source code one will find violations of the conventions. Instead of interrupting the whole process, we implement error handling. The result is a notification for the user to alert the developers about the error. Also, the remaining information, which aren't immediately affected by the error, are still extracted and used for the generation of the feature model, if possible.
+
+Another challenge lies within the order of processing the features during the creation of the feature model. To correctly reproduce the hierarchy of the features, features have to be declared as child features of their parents. If the declared parent feature doesn't already exist, the creation of a feature model fails. So we have to ensure for each feature, that it gets processed after it's parent feature.
+
+Another error we found is one ore more features having a parent feature which doesn't exist as a code artifact itself. Thus, the parent feature doesn't exists in the feature model and it's child features can't be placed in the hierarchy in the correct place. To still include these features in the feature model we create an abstract feature for the parent feature. The abstract feature is a direct child of the root feature. But as it doesn't have any describing code, it only has a name and no additional descriptive details.
 
 The extracted feature model is also used in the following step of configuration. There, it visualizes the interrelations of the features and supports the understanding of the configuration steps.
 
-Configuration of product lines requires a good understanding of the given problems and the possible solutions to these problems as well as the specific implementations of these solutions. This domain knowledge is the most challenging part of configurations and restricts most of the possible users to do the configuration on their own. The same goes of course for Odoo and the various components contained in the project.
-
-To empower possible users to configure \textit{Odoo} on their own, our approach is to use a questionnaire. In the progress of implementation, experts also design a questionnaire in such a way that a possible user has to answer a given amount of questions to perform the configuration of a product meeting his personal needs without him having to know all the details of the implementation of the product line or even the individual features. This effectively redesigns the process of configuration in such a way, that a user is independent of the knowledge about the details of the implementation and can focus on tailoring the product line to his specific use-case.
-
-The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail on the following sections.
-
-
-\subsection{Extraction of a feature model}
-To automatically extract a feature model out of a given software project the structure of that project must be algorithmically processable. We had a thorough look at the source code of \textit{Odoo} and found it to be structured according to the following rules:
-
-\begin{itemize}
-	\item All features are stored within a specified directory
-	\item Each feature is stored in a separate sub-directory
-	\item A feature's parent features are stated in the name of the corresponding directory
-	\begin{itemize}
-		\item The complete hierarchy is displayed, except for the root feature
-		\item Individual parent features are delimited with an unique symbol
-	\end{itemize}
-	\item Each feature directory contains a descriptive file with a specified name containing:
-	\begin{itemize}
-		\item A descriptive name of the feature
-		\item A description text for the feature
-		\item All dependencies including the parent features
-	\end{itemize}
-\end{itemize}
-
-Following these rules we automatically extract the information needed to generate a feature model. For this procedure we implemented a plugin for FeatureIDE which processes the extracted information to a feature model. The procedure to generate a feature model is stated following.
-
-The strongest correspondence lies within the hierarchy. The parent names are parsed from the directory name and -if existing- looked up in the existing partial feature model from the previously parsed features. As the directories are parsed in alphabetical order and this way of ordering places e.g. ``Feature1'' in front of ``Feature1\_Feature'', a parent feature will always be processed before it's child features.
-
-After placing it in the correct position within the existing partial feature model each feature's descriptive file gets processed. Each feature gets enriched with it's descriptive details and it's dependencies. The list of dependencies firstly gets reduced by the parent features as the feature models hierarchy already implements this kind of dependencies. The remaining dependencies are stated as constraints. To shorten the list of constraints shared dependencies between multiple features are combined to a single constraint.
-
-We applied these steps to a total of A files, thus extracting B features for \textit{Odoo}. These features are arranged in a total of C hierarchical levels. Additionally, D constraints limit the possible valid configurations.
-
 \subsection{Questionnaire Approach}
-Configuration is a challenging tasks within the scope of software product lines. The resulting feature model from the automated generation yields a better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support the process of configuration, still domain knowledge is required to be able to find the right combination of features for a given use-case.
+Configuration is a challenging tasks within the scope of software product lines. The resulting feature model from the automated generation yields a better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support for the process of configuration, still domain knowledge is required to be able to find the right combination of features for a given use-case.
 
-This work therefore introduces a method to allow experts to apply their knowledge and understanding to a whole product line during the development. Thus end users are enabled to draw on this knowledge whenever a configuration is taking place.
+This work therefore introduces a method to allow experts to apply their knowledge and understanding to a whole product line during the development. Thus, users are enabled to draw on this knowledge whenever a configuration is taking place.
 
-In this work, we made the decision to use a questionnaire-based approach. Depending on the implementation of the questionnaire during development a partial or event complete configuration can be archived by a user through just answering the questions of the questionnaire. The selection of features gets lifted to a higher level of abstraction. The user only has to decide between the possible answers presented to him in the questionnaire to best fit to his use-case. Internally the selected answers are mapped to a specified (un-)selection of features so the user avoids the hassle of considering implementation-details of each feature.
+In this work, we made the decision to use a questionnaire-based approach. In the progress of implementation, experts also design a questionnaire. They do so in such a way, that a user has to answer a given amount of questions to perform the configuration of a product. Depending on the implementation of the questionnaire, a partial or even complete configuration can be archived by a user through just answering the questions of the questionnaire.
+
+The selection of features gets lifted to a higher level of abstraction. The user only has to decide between the possible answers presented to him in the questionnaire to best fit to his use-case. Internally the selected answers are mapped to a specified (un-)selection of features so the user avoids the hassle of considering implementation-details of each feature. This effectively redesigns the process of configuration in such a way, that a user is independent of the knowledge about the details of the implementation and can focus on tailoring the product line to his specific use-case.
 
 This highly depends on the implementation of the questionnaire during development. Our work therefore introduces a set of tools to easily integrate such a questionnaire. The following paragraphs will give an overview over the the possible definitions of a questionnaire.
 
-Each page of the questionnaire is defined independently. It always contains at least a Question and more then one possible answer. The answers can be grouped analogous to the grouping of features in a feature model: \textit{OR} (at least one answer has to be selected), \textit{ALTERNATIVE} (exactly one answer has to be selected) and \textit{AND} (any number of answers can be selected).
+Each page of the questionnaire is defined independently. It always contains at least a Question and more then one possible answer. The answers can be grouped analogous to the grouping of features in a feature model: \textit{or} (at least one answer has to be selected), \textit{alternative} (exactly one answer has to be selected) and \textit{and} (any number of answers can be selected).
 
 Each answer internally has a mapping to a set of features. This set of features defines which features are selected or specifically unselected in the case of that answer being chosen by the user.
 
@@ -70,6 +41,7 @@ Each answer can also have an indicator to define which page of the questionnaire
 
 We also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in the following code snippet:
 
+\begin{figure}
 \begin{lstlisting}
 <configurationSurvey>
 	<projectName>Name</projectName>
@@ -95,8 +67,9 @@ We also introduce a data structure to hold the definition of a questionnaire. To
 		</answers>
 	</page>
 </configurationSurvey>
-\caption{Examplary XML file for a  questionnaire}
 \end{lstlisting}
+\caption{Examplary XML file for a  questionnaire}
+\end{figure}
 
 \begin{tabulary}{\linewidth}{LLL}
 \textbf{Tag} & \textbf{attributes} & \textbf{child tags}\\
@@ -113,12 +86,12 @@ feature & selection & \\
 The individual tags are explained as follows:
 
 \begin{itemize}
-\item configurationSurvey: The root tag to contain all other tags for the questionnaire.
-\item section: Enables grouping of question-pages. Also displays the name and description at the top of every page.
-\item page: Contains a question and the corresponding answers. Also has an indicator for a section
-\item answers: Contains the individual possible answers and groups them in the specified manner.
-\item answer: Defines the displayed text of an answer as well as the corresponding features. Can also have an indicator for the next page.
-\item dependencies: Defines the (un-)selection of features, if the corresponding answer gets selected.
+\item \texttt{configurationSurvey}: The root tag to contain all other tags for the questionnaire.
+\item \texttt{section}: Enables grouping of question-pages. Also displays the name and description at the top of every page.
+\item \texttt{page}: Contains a question and the corresponding answers. Also has an indicator for a section
+\item \texttt{answers}: Contains the individual possible answers and groups them in the specified manner.
+\item \texttt{answer}: Defines the displayed text of an answer as well as the corresponding features. Can also have an indicator for the next page.
+\item \texttt{dependencies}: Defines the (un-)selection of features, if the corresponding answer gets selected.
 \end{itemize}
 
 %TODO: Am ende kommt ein konfiguriertes Produkt raus.
