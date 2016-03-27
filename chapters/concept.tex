@@ -1,12 +1,13 @@
-\begin{figure}
-	\includegraphics{img/img-workflow.pdf}
-	\caption{Diagram showing the general workflow}
-	\label{img-workflow}
-\end{figure}
+
 %unstructured product line $\rightarrow$ generated feature model $\rightarrow$ %optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert %$\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire %$\Rightarrow$ Product (variant)\\
 
 This chapter describes the general workflow we aim to archive within this work. This workflow can be seen in Figure~\ref{img-workflow}. To start off, some kind of software product line is required. It's source code has to be structured in a way that allows for an algorithm to recognize the individual features as well as their interrelations, especially the hierarchical dependencies.
 
+\begin{figure}[H]
+	\includegraphics{img/img-workflow.pdf}
+	\caption{Diagram showing the general workflow}
+	\label{img-workflow}
+\end{figure}
 
 The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail in the following sections.
 
@@ -39,39 +40,9 @@ Each answer internally has a mapping to a set of features. This set of features 
 
 Each answer can also have an indicator to define which page of the questionnaire is to be displayed next. An answer can also indicate the end of the questionnaire. If no next page is defined the questionnaire will continue with the next page within it's definition. This allows a dynamic conditional design of the questionnaire so the user is only confronted with the exact set of questions needed to configure the variant for his specific use-case. This also allows the user to skip questions or cancel the configuration before finishing it and thus creating a partial configuration.
 
-We also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in the following code snippet:
+We also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in figure~\ref{fig:xmlFigure}.
 
-\begin{figure}
-\lstset{language=XML}
-\begin{lstlisting}
-<configurationSurvey>
-	<projectName>Name</projectName>
-	<section id="0">
-		<name>Section Name</name>
-		<description>Section description</description>
-	</section>
-	<page id="0" sectionId="0">
-		<question>Question for the user</question>
-		<answers type="alternative">
-			<answer nextPageId="1">
-				<label>Answer label</label>
-				<description>
-					Answer description
-				</description>
-				<dependencies>
-					<feature selection="false">
-						Unselected feature
-					</feature>
-					<feature>selected feature</feature>
-				</dependencies>
-			</answer>
-		</answers>
-	</page>
-</configurationSurvey>
-\end{lstlisting}
-\caption{Examplary XML file for a  questionnaire}
-\end{figure}
-
+\begin{figure}[H]
 \begin{tabulary}{\linewidth}{LLL}
 \textbf{Tag} & \textbf{attributes} & \textbf{child tags}\\
 \hline
@@ -83,9 +54,9 @@ answer & nextPageId & label, description, dependencies\\
 dependencies & & feature\\
 feature & selection & \\
 \end{tabulary}\vspace{2.5em}
+\end{figure}
 
 The individual tags are explained as follows:
-
 \begin{itemize}
 \item \texttt{configurationSurvey}: The root tag to contain all other tags for the questionnaire.
 \item \texttt{section}: Enables grouping of question-pages. Also displays the name and description at the top of every page.
@@ -94,5 +65,37 @@ The individual tags are explained as follows:
 \item \texttt{answer}: Defines the displayed text of an answer as well as the corresponding features. Can also have an indicator for the next page.
 \item \texttt{dependencies}: Defines the (un-)selection of features, if the corresponding answer gets selected.
 \end{itemize}
+
+\begin{figure}[H]
+	\lstset{language=XML}
+	\begin{lstlisting}
+	<configurationSurvey>
+		<projectName>Name</projectName>
+		<section id="0">
+			<name>Section Name</name>
+			<description>Section description</description>
+		</section>
+		<page id="0" sectionId="0">
+			<question>Question for the user</question>
+			<answers type="alternative">
+				<answer nextPageId="1">
+					<label>Answer label</label>
+					<description>
+						Answer description
+					</description>
+					<dependencies>
+						<feature selection="false">
+							Unselected feature
+						</feature>
+						<feature>selected feature</feature>
+					</dependencies>
+				</answer>
+			</answers>
+		</page>
+	</configurationSurvey>
+	\end{lstlisting}
+	\caption{Examplary XML file for a  questionnaire}
+	\label{fig:xmlFigure}
+\end{figure}
 
 %TODO: Am ende kommt ein konfiguriertes Produkt raus.
