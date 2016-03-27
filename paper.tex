@@ -76,6 +76,20 @@
 	tabsize=2
 }
 
+\definecolor{maroon}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\lstdefinelanguage{XML}
+{
+	morestring=[s]{"}{"},
+	morecomment=[s]{?}{?},
+	morecomment=[s]{!--}{--},
+	commentstyle=\color{darkgreen},
+	moredelim=[s][\color{black}]{>}{<},
+	moredelim=[s][\color{red}]{\ }{=},
+	stringstyle=\color{blue},
+	identifierstyle=\color{maroon}
+}
+
 
 % *** CITATION PACKAGES ***
 %
