@@ -1,12 +1,15 @@
-This is where the work is concluded. In this section there will be a description of the way we did things and the experiences we made during it. An emphasis will be on the insights and the findings from the scenarios will get outlined.
-
-Here will be a summary of the new questions that were raised in this work. Also there will be topics for further research. Particularly the problems we encountered and couldn't solve with our concept and why will be pointed out and first approaches will be suggested.
-
 %TODO: research questions
-In this work we aim at finding a way to support the process of configuring a software product line. To do so, we firstly introduce feature models as formalism
+
+In this work we aim at finding a way to support the process of configuring an existing software product line to generate an actual product. 
+
+To do so, we firstly use feature models as formalism to structure the existing code artifacts. The feature model gets filled with the information we get from analyzing the structure and conventions of the existing source code. The resulting feature model contains every code artifact as a feature and also includes the constraints and restrictions.
+
+We also introduce a questionnaire to support the configuration of a product from the given product line. A questionnaire needs to be designed carefully by the developers or experts on the domain of the product line. It allows a mapping between answers to simple questions and actual features of the product line. With this method, a user doesn't have to undergo the process of configuration in the sense of (un-)selecting a specific set of features. Instead he only has to answer questions according to his use case to do the configuration of his specific product. As the tool uses the underlying FeatureIDE, it also makes use of it's functions, e.g. validity checks. This additionally supports the usability and correctness of the whole process.
 
 %TODO: wann ist es sinnvoll, wann nicht?
-
 %TODO: ist das auf andere Projekte übertragbar? Was sind Voraussetzungen?
-
 %TODO: Threats to Validity
+
+To make meaningful use of the tools introduced in this work, one would at least need a software which is structured in a ``feature-like'' manner. This structure has to be in a way that allows a feature model to be extracted from it. Alternatively, this first step can be skipped, if a feature model already exists for the given software product line.
+
+Also, the features have to have some kind of interrelations that allows abstract questions to map to them. If that is not the case, the questionnaire degenerates to a simple (un-) selection of each feature.
