@@ -1,6 +1,3 @@
-
-%unstructured product line $\rightarrow$ generated feature model $\rightarrow$ %optimizing (via SAT-solver?) $\rightarrow$ domain knowledge of an expert %$\Rightarrow$ Questionnaire $\rightarrow$ Feature model + Questionnaire %$\Rightarrow$ Product (variant)\\
-
 This chapter describes the general workflow we aim to archive within this work. This workflow can be seen in Figure~\ref{img-workflow}. To start off, some kind of software product line is required. It's source code has to be structured in a way that allows for an algorithm to recognize the individual features as well as their interrelations, especially the hierarchical dependencies.
 
 \begin{figure}[H]
@@ -9,11 +6,11 @@ This chapter describes the general workflow we aim to archive within this work. 
 	\label{img-workflow}
 \end{figure}
 
-The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail in the following sections.
+The two major steps of extraction of the feature model and the creation and usage of the questionnaire are described in detail in the following sections. As a final result of these steps stands a product targeting the users needs. Supporting the process towards that result is what we aimed at with this work.
 
 
 \subsection{Extraction of a Feature Model}
-Out of the given structure we extract the hierarchies of the features as well as additional dependencies. These are the input for the automated generation of a feature model. This allows for overview over the product line and it's variability. During our efforts to implement an automated generation of a feature model we encounter some problems for which we have to find solutions/workarounds.
+Out of the given structure of the source code base we extract the hierarchies of the features as well as additional dependencies. These are the input for the automated generation of a feature model. This allows for overview over the product line and it's variability. During our efforts to implement an automated generation of a feature model we encounter some problems for which we have to find solutions/workarounds.
 
 The first problem consists of finding the structures of the given source code and processing them algorithmically. Most software complies to conventions regarding the naming and structuring of directories. We try to make use of these conventions. But as they are just conventions and not rules, in most source code one will find violations of the conventions. Instead of interrupting the whole process, we implement error handling. The result is a notification for the user to alert the developers about the error. Also, the remaining information, which aren't immediately affected by the error, are still extracted and used for the generation of the feature model, if possible.
 
@@ -21,7 +18,8 @@ Another challenge lies within the order of processing the features during the cr
 
 Another error we found is one ore more features having a parent feature which doesn't exist as a code artifact itself. Thus, the parent feature doesn't exists in the feature model and it's child features can't be placed in the hierarchy in the correct place. To still include these features in the feature model we create an abstract feature for the parent feature. The abstract feature is a direct child of the root feature. But as it doesn't have any describing code, it only has a name and no additional descriptive details.
 
-The extracted feature model is also used in the following step of configuration. There, it visualizes the interrelations of the features and supports the understanding of the configuration steps.
+In each step of the creation of the feature model, e.g. after adding a feature or constraint to the feature model, it is checked by a SAT-solver to avoid creating an invalid feature model which has no valid configurations (see section~\ref{ch:sat}). The extracted feature model is also used in the following step of configuration. There, it visualizes the interrelations of the features and supports the understanding of the configuration steps.
+
 
 \subsection{Questionnaire Approach}
 Configuration is a challenging tasks within the scope of software product lines. The resulting feature model from the automated generation yields a better overview over the possible features and their interrelationships. Although the formalism of a feature model allows for tool support for the process of configuration, still domain knowledge is required to be able to find the right combination of features for a given use-case.
@@ -98,4 +96,4 @@ The individual tags are explained as follows:
 	\label{fig:xmlFigure}
 \end{figure}
 
-%TODO: Am ende kommt ein konfiguriertes Produkt raus.
+This allows for experts to design a questionnaire in such a way, that it can guide a user without specific domain knowledge throughout the whole process of configuration. Through just answering questions concerning his specific use-case the user takes all necessary decisions. After he completes the questionnaire, our tool maps his answers to a complete configuration, which is then applied to the existing code artifacts. Finally, a working product is the result.
