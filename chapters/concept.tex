@@ -46,17 +46,20 @@ Each answer can also have an indicator to define which page of the questionnaire
 We also introduce a data structure to hold the definition of a questionnaire. To archive easy integration we decided for a definition in XML. We defined the necessary tags to create a questionnaire which are displayed in Figure~\ref{fig:xmlFigure}.
 
 \begin{figure}[H]
-\begin{tabulary}{\linewidth}{LLL}
-\textbf{Tag} & \textbf{attributes} & \textbf{child tags}\\
-\hline
-configurationSurvey & & projectName, section, page\\
-section & id & name, description\\
-page & id, sectionId & question, answers\\
-answers & type & answer\\
-answer & nextPageId & label, description, dependencies\\
-dependencies & & feature\\
-feature & selection & \\
-\end{tabulary}\vspace{2.5em}
+\begin{tabulary}{\linewidth}{| L | L | L |}
+	\hline
+	\textbf{Tag} 		& \textbf{\mbox{Attributes}} & \textbf{Child tags}	\\ \hline
+		
+	configurationSurvey & 				& projectName, section, page		\\ \hline
+	section 			& id 			& name, description					\\ \hline
+	page 				& id, sectionId & question, answers					\\ \hline
+	answers 			& type 			& answer							\\ \hline
+	answer 				& nextPageId 	& label, description, dependencies	\\ \hline
+	dependencies		& 				& feature							\\ \hline
+	feature 			& selection 	& 									\\ \hline
+\end{tabulary}
+\caption{Table with the XML element structure}
+\label{tab-xmlelements}
 \end{figure}
 
 The individual tags are explained as follows:
