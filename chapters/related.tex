@@ -1,1 +1,7 @@
-{\color{red}TODO: Schreiben}
+
+
+Several techniques for synthesising Feature Models from a set of configurations, constraints, or even publicly available product descriptions found online have been proposed \cite{zhang2013mining, becan2014webfml, davril2013feature}. These techniques require very few informations of the source, but therefore can only create limited Feature Models. Furthermore they cannot be applied in our context, as they assume the availability of formal and complete descriptions of configurations and constraints. Therefore we developed a new extraction method that relies on set project structure and conventions.
+
+Heymans et al. \cite{davril2013feature} presented an approach to generate a feature model out of a product description. This approach equals the folder names we are provided with, although Heymans lacks the hierarchy of those features, which have to be extracted by mining associations. As we get the hierarchy out of the configuration files we already have all information needed. This approach could be used in later work to handle naming conflicts or missing information.
+
+The approach from La Rosa et al. \cite{qbvm} presents some techniques to configure a variable system based on questionnaire models and domain constraints. The main parts can be applied to feature models, although barely referenced them. Therefore they did not include all of the different logic that features can have, simplifying it in a way. They did nevertheless present a technique to detect circular dependencies and contradictory constraints, which was not part of this work, but could be a focus for further improvements.
