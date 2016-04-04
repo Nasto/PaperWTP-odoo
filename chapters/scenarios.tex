@@ -23,26 +23,6 @@ The choices made by the user have to be evaluated. This happens after each singl
 
 As stated in Section~\ref{ch:quest-impl}, it is possible to define a dynamic ordering of the questions within the questionnaire according to the given answer. The next step in evaluating the user input is looking for the correct question to be asked next. If there is a next question explicitly stated in the selected answer, that question gets displayed next. Else, if there are questions left unanswered in the questionnaire, that occur after the current questions, the question displayed next is the question following the current question in the definition. If there is no next question to be displayed, the questionnaire is considered finished. Optimally, this also results in a final configuration of a product. However, our design also allows for partial configurations as a result of an executed questionnaire. In the case of a finished configuration, this configuration gets passed to FeatureIDE, which then compiles the configured product.
 
-To check the flexibility and usability of the questionnaire, we decided to try it on a sample use case. As Odoo has not implemented a questionnaire of their own yet, we build one based on their website and features from the generated feature model. As a use case, we chose the demand for a e-commerce website for a newly created online-only shop. To start off, the questionnaire shown in Figure~\ref{img-screenshots} asks whether we already use any Odoo components at our company. If we would have pressed "Yes", we could have chosen which one and in the later steps this would be considered. After choosing "No", we are asked which of the Odoo topics interests us, answering it with "Websites" and "Sales". This brings us to a wizard page showing all of the websites we could choose. After selecting "eCommerce" the next page already chose "Accounting" for us, as this was one of the dependencies from the features that were selected in the background when we chose "eCommerce". No matter what we select on the last page, we can no longer press "next", as there is no next Page for us to configure. To get our configuration file we press "Finish", which we could have done any time during the configuration, generating a partial configuration.
+To check the flexibility and usability of the questionnaire, we decided to try it on a sample use case. As \textit{Odoo} has not implemented a questionnaire of their own yet, we build one based on their website and features from the generated feature model. As a use case, we chose the demand for a e-commerce website for a newly created online-only shop. To start off, the questionnaire shown in Figure~\ref{img-screenshots} asks whether we already use any \textit{Odoo} components at our company. If we would have pressed "Yes", we could have chosen which one and in the later steps this would be considered. After choosing "No", we are asked which of the \textit{Odoo} topics interests us, answering it with "Websites" and "Sales". This brings us to a wizard page showing all of the websites we could choose. After selecting "eCommerce" the next page already chose "Accounting" for us, as this was one of the dependencies from the features that were selected in the background when we chose "eCommerce". No matter what we select on the last page, we can no longer press "Next", as there is no next Page for us to configure. To get our configuration file we press "Finish", which we could have done any time during the configuration, generating a partial configuration.
 
-The generated configuration file contains 38 features, from which 10 were selected directly and the rest as dependencies. This process could have been done alone with the feature tree, but that would have taken much longer, as there is no sorting and the feature names are not as descriptive as the choices from the questionnaire. Although we probably did not cover all possible cases in our questionnaire doe to the lack of domain knowledge, this sample shows that this use case can be handled comfortably with our questionnaire.
-
-
-%TODO: Auswertung
-
-%Also state how some of the questions and their mapping in the questionnaire were developed.
-
-%Finally, show the process of configuration through running a fictinal user over the questionnaire and document his decisions as well as the resulting configurations.
-
-%TODO: test ausdenken, der alle ``Fähgkeiten'' zeigt
-
-% Fahrradladen, Online-Shop, Social-Media, Bezahldienste, Kontakt-Portal, DE/EN, Newsletter
-%
-% Website builder, eCommerce, SEA
-% Sales, CRM, invoicing, Point of Sale
-% Inventory, Purchase
-% Email Marketing, Survey
-
-%TODO: Planung, durchführung, Auswertung
-
-%TODO: nur ein konstruierter Fall, weil Domain Knowledge fehlt.
+The generated configuration file contains 38 features, from which 10 were selected directly and the rest as dependencies. This process could have been done alone with the feature tree, but that would have taken much longer, as there is no sorting and the feature names are not as descriptive as the choices from the questionnaire. Although we probably did not cover all possible cases in our questionnaire due to the lack of domain knowledge, this sample shows that this use case can be handled comfortably with our questionnaire.
